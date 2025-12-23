@@ -1,5 +1,5 @@
 import 'package:employees_app/domain/models/employee/employee.dart';
-import 'package:employees_app/domain/repositories/employees_repository.dart';
+import 'package:employees_app/domain/repositories/employees_api/employees_repository.dart';
 import 'package:dio/dio.dart';
 
 class EmployeesRepositoryImpl implements EmployeesRepository {
@@ -10,7 +10,6 @@ class EmployeesRepositoryImpl implements EmployeesRepository {
     final Response response = await Dio().get('$_baseUrl/employees');
     if (response.statusCode == 200 && response.data['status'] == 'success') {
       return response.data['data'].map((item) {
-        print(item);
         return Employee.fromJson(item);
       }).toList();
     } else {
@@ -29,7 +28,7 @@ class EmployeesRepositoryImpl implements EmployeesRepository {
   }
 
   @override
-  Future<String> createEmployee(Employee employee) async {
+  Future<int?> createEmployee(Employee employee) async {
     final Map<String, dynamic> creationData = {
       'name': employee.employeeName,
       'salary': employee.employeeSalary,
@@ -48,11 +47,11 @@ class EmployeesRepositoryImpl implements EmployeesRepository {
 
   // TODO: is not exactly json from employee but specific name fields
   @override
-  Future<Employee> updateEmployee(Employee employee) async =>
+  Future<void> updateEmployee(Employee employee) async =>
       throw UnimplementedError();
 
   @override
-  Future<void> deleteEmployee(String id) async {
+  Future<void> deleteEmployee(int id) async {
     final Response response = await Dio().delete('$_baseUrl/delete/$id');
     if (response.statusCode == 200 && response.data['status'] == 'success') {
       return;

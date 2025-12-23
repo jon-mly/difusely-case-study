@@ -11,8 +11,9 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/employee/:id',
-      builder: (context, state) =>
-          EmployeeDetailPage(employeeId: state.pathParameters['id']!),
+      builder: (context, state) => EmployeeDetailPage(
+        employeeId: int.parse(state.pathParameters['id']!),
+      ),
     ),
   ],
 );

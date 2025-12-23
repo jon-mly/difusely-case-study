@@ -29,6 +29,8 @@ class Employee with _$Employee {
 
   factory Employee.fromJson(Map<String, dynamic> json) =>
       _$EmployeeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EmployeeToJson(this);
 }
 
 double _parseStringToDouble(String value) => double.parse(value);

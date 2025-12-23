@@ -2,12 +2,16 @@
   "appName": "Employees App",
   "employees": {
     "title": "Employees",
+    "list": {
+      "empty": "No employees found"
+    },
     "cell": {
       "age": "{} years old"
     }
   },
   "employeeDetail": {
     "title": "Employee Detail",
+    "notFound": "Employee not found",
     "cell": {
       "id": "ID",
       "name": "Name",
@@ -17,5 +21,9 @@
     },
     "edit": "Edit",
     "delete": "Delete"
+  },
+  "dataSource": {
+    "local": "Local",
+    "remote": "Remote"
   }
 }
