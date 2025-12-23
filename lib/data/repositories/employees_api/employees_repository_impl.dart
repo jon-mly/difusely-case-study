@@ -1,4 +1,5 @@
 import 'package:employees_app/domain/models/employee/employee.dart';
+import 'package:employees_app/domain/models/employee_edit/employee_edit.dart';
 import 'package:employees_app/domain/repositories/employees_api/employees_repository.dart';
 import 'package:dio/dio.dart';
 
@@ -9,7 +10,9 @@ class EmployeesRepositoryImpl implements EmployeesRepository {
   Future<List<Employee>> getAllEmployees() async {
     final Response response = await Dio().get('$_baseUrl/employees');
     if (response.statusCode == 200 && response.data['status'] == 'success') {
+      print(response.data['data']);
       return response.data['data'].map((item) {
+        print(item);
         return Employee.fromJson(item);
       }).toList();
     } else {
@@ -21,6 +24,7 @@ class EmployeesRepositoryImpl implements EmployeesRepository {
   Future<Employee?> getEmployeeById(String id) async {
     final Response response = await Dio().get('$_baseUrl/employee/$id');
     if (response.statusCode == 200 && response.data['status'] == 'success') {
+        print(response.data);
       return Employee.fromJson(response.data.data);
     } else {
       throw Exception('Failed to load employee');
@@ -28,18 +32,13 @@ class EmployeesRepositoryImpl implements EmployeesRepository {
   }
 
   @override
-  Future<int?> createEmployee(Employee employee) async {
-    final Map<String, dynamic> creationData = {
-      'name': employee.employeeName,
-      'salary': employee.employeeSalary,
-      'age': employee.employeeAge,
-    };
+  Future<int> createEmployee(EmployeeEdit employeeEdit) async {
     final Response response = await Dio().post(
       '$_baseUrl/create',
-      data: creationData,
+      data: employeeEdit.toJson(),
     );
     if (response.statusCode == 200 && response.data['status'] == 'success') {
-      return response.data['data']?['id'];
+      return response.data['data']['id'];
     } else {
       throw Exception('Failed to create employee');
     }
@@ -47,8 +46,17 @@ class EmployeesRepositoryImpl implements EmployeesRepository {
 
   // TODO: is not exactly json from employee but specific name fields
   @override
-  Future<void> updateEmployee(Employee employee) async =>
-      throw UnimplementedError();
+  Future<void> updateEmployee(int id, EmployeeEdit employeeEdit) async {
+    final Response response = await Dio().put(
+      '$_baseUrl/update/$id',
+      data: employeeEdit.toJson(),
+    );
+    if (response.statusCode == 200 && response.data['status'] == 'success') {
+      return;
+    } else {
+      throw Exception('Failed to update employee');
+    }
+  }
 
   @override
   Future<void> deleteEmployee(int id) async {

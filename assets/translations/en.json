@@ -1,5 +1,13 @@
 {
   "appName": "Employees App",
+  "error": {
+    "title": "Error",
+    "dismiss": "OK",
+    "createEmployee": "Failed to create employee",
+    "updateEmployee": "Failed to update employee",
+    "deleteEmployee": "Failed to delete employee",
+    "fetchEmployees": "Failed to sync with server"
+  },
   "employees": {
     "title": "Employees",
     "list": {
@@ -20,7 +28,18 @@
       "ageSuffix": "{} years old"
     },
     "edit": "Edit",
-    "delete": "Delete"
+    "delete": "Delete",
+    "editDialog": {
+      "title": "Edit Employee",
+      "titleCreation": "Create Employee",
+      "nameLabel": "Name",
+      "nameValidator": "Please provide a name",
+      "salaryLabel": "Salary",
+      "salaryValidator": "Please provide a salary",
+      "ageLabel": "Age",
+      "ageValidator": "Please provide an age",
+      "save": "Save"
+    }
   },
   "dataSource": {
     "local": "Local",

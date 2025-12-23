@@ -1,4 +1,5 @@
 import 'package:employees_app/domain/models/employee/employee.dart';
+import 'package:employees_app/domain/models/employee_edit/employee_edit.dart';
 import 'package:employees_app/domain/models/sync/sync_data.dart';
 import 'package:employees_app/presentation/providers/services/employee_service_provider.dart';
 import 'package:employees_app/presentation/providers/services/employees_persistence_service_provider.dart';
@@ -35,14 +36,25 @@ class EmployeesNotifier extends AsyncNotifier<SyncData<List<Employee>>> {
     }
   }
 
-  Future<void> createEmployee(Employee employee) async {
+  Future<void> createEmployee(EmployeeEdit employeeEdit) async {
     final List<Employee> originalList = state.value?.data ?? [];
 
     try {
+      final Employee newEmployee = Employee(
+        id: null,
+        employeeName: employeeEdit.name,
+        employeeSalary: employeeEdit.salary,
+        employeeAge: employeeEdit.age,
+        profileImage: '',
+      );
       final List<Employee> newList = List<Employee>.from(originalList);
-      newList.add(employee);
+      newList.add(newEmployee);
+      final int newEmployeeIndex = newList.length - 1;
       _updateState(SyncData(data: newList, source: .local));
-      await ref.read(employeeServiceProvider).createEmployee(employee);
+      final int newEmployeeId = await ref
+          .read(employeeServiceProvider)
+          .createEmployee(employeeEdit);
+      newList[newEmployeeIndex] = newEmployee.copyWith(id: newEmployeeId);
       _updateState(SyncData(data: newList, source: .remote));
     } catch (e) {
       _updateState(SyncData(data: originalList, source: .local));
@@ -50,18 +62,23 @@ class EmployeesNotifier extends AsyncNotifier<SyncData<List<Employee>>> {
     }
   }
 
-  Future<void> updateEmployee(Employee employee) async {
+  Future<void> updateEmployee(int id, EmployeeEdit employeeEdit) async {
     final List<Employee> originalList = state.value?.data ?? [];
 
     try {
       final List<Employee> newList = List<Employee>.from(originalList);
-      final int index = newList.indexWhere((e) => e.id == employee.id);
+      final int index = newList.indexWhere((e) => e.id == id);
       if (index == -1) {
         throw Exception('Employee not found');
       }
-      newList[index] = employee;
+      final Employee edited = newList[index].copyWith(
+        employeeName: employeeEdit.name,
+        employeeSalary: employeeEdit.salary,
+        employeeAge: employeeEdit.age,
+      );
+      newList[index] = edited;
       _updateState(SyncData(data: newList, source: .local));
-      await ref.read(employeeServiceProvider).updateEmployee(employee);
+      await ref.read(employeeServiceProvider).updateEmployee(id, employeeEdit);
       _updateState(SyncData(data: newList, source: .remote));
     } catch (e) {
       _updateState(SyncData(data: originalList, source: .local));

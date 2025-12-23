@@ -1,8 +1,6 @@
 import 'package:employees_app/domain/models/employee/employee.dart';
+import 'package:employees_app/domain/models/employee_edit/employee_edit.dart';
 import 'package:employees_app/domain/repositories/employees_api/employees_repository.dart';
-
-// TODO: add caching system upon request results
-// TODO: add error handling
 
 class EmployeeService {
   final EmployeesRepository _employeesRepository;
@@ -15,11 +13,11 @@ class EmployeeService {
   Future<Employee?> getEmployeeById(String id) async =>
       _employeesRepository.getEmployeeById(id);
 
-  Future<int?> createEmployee(Employee employee) async =>
-      _employeesRepository.createEmployee(employee);
+  Future<int> createEmployee(EmployeeEdit employeeEdit) async =>
+      _employeesRepository.createEmployee(employeeEdit);
 
-  Future<void> updateEmployee(Employee employee) async =>
-      _employeesRepository.updateEmployee(employee);
+  Future<void> updateEmployee(int id, EmployeeEdit employeeEdit) async =>
+      _employeesRepository.updateEmployee(id, employeeEdit);
 
   Future<void> deleteEmployee(int id) async =>
       _employeesRepository.deleteEmployee(id);

@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'employee.dart';
+part of 'employee_edit.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -11,42 +11,41 @@ part of 'employee.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
-
 /// @nodoc
-mixin _$Employee {
+mixin _$EmployeeEdit {
 
- int? get id; String? get employeeName; double? get employeeSalary; int? get employeeAge; String? get profileImage;
-/// Create a copy of Employee
+ String get name; double get salary; int get age;
+/// Create a copy of EmployeeEdit
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$EmployeeCopyWith<Employee> get copyWith => _$EmployeeCopyWithImpl<Employee>(this as Employee, _$identity);
+$EmployeeEditCopyWith<EmployeeEdit> get copyWith => _$EmployeeEditCopyWithImpl<EmployeeEdit>(this as EmployeeEdit, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Employee&&(identical(other.id, id) || other.id == id)&&(identical(other.employeeName, employeeName) || other.employeeName == employeeName)&&(identical(other.employeeSalary, employeeSalary) || other.employeeSalary == employeeSalary)&&(identical(other.employeeAge, employeeAge) || other.employeeAge == employeeAge)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmployeeEdit&&(identical(other.name, name) || other.name == name)&&(identical(other.salary, salary) || other.salary == salary)&&(identical(other.age, age) || other.age == age));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
-int get hashCode => Object.hash(runtimeType,id,employeeName,employeeSalary,employeeAge,profileImage);
+int get hashCode => Object.hash(runtimeType,name,salary,age);
 
 @override
 String toString() {
-  return 'Employee(id: $id, employeeName: $employeeName, employeeSalary: $employeeSalary, employeeAge: $employeeAge, profileImage: $profileImage)';
+  return 'EmployeeEdit(name: $name, salary: $salary, age: $age)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $EmployeeCopyWith<$Res>  {
-  factory $EmployeeCopyWith(Employee value, $Res Function(Employee) _then) = _$EmployeeCopyWithImpl;
+abstract mixin class $EmployeeEditCopyWith<$Res>  {
+  factory $EmployeeEditCopyWith(EmployeeEdit value, $Res Function(EmployeeEdit) _then) = _$EmployeeEditCopyWithImpl;
 @useResult
 $Res call({
- int? id, String? employeeName, double? employeeSalary, int? employeeAge, String? profileImage
+ String name, double salary, int age
 });
 
 
@@ -54,31 +53,29 @@ $Res call({
 
 }
 /// @nodoc
-class _$EmployeeCopyWithImpl<$Res>
-    implements $EmployeeCopyWith<$Res> {
-  _$EmployeeCopyWithImpl(this._self, this._then);
+class _$EmployeeEditCopyWithImpl<$Res>
+    implements $EmployeeEditCopyWith<$Res> {
+  _$EmployeeEditCopyWithImpl(this._self, this._then);
 
-  final Employee _self;
-  final $Res Function(Employee) _then;
+  final EmployeeEdit _self;
+  final $Res Function(EmployeeEdit) _then;
 
-/// Create a copy of Employee
+/// Create a copy of EmployeeEdit
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? employeeName = freezed,Object? employeeSalary = freezed,Object? employeeAge = freezed,Object? profileImage = freezed,}) {
-  return _then(Employee(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int?,employeeName: freezed == employeeName ? _self.employeeName : employeeName // ignore: cast_nullable_to_non_nullable
-as String?,employeeSalary: freezed == employeeSalary ? _self.employeeSalary : employeeSalary // ignore: cast_nullable_to_non_nullable
-as double?,employeeAge: freezed == employeeAge ? _self.employeeAge : employeeAge // ignore: cast_nullable_to_non_nullable
-as int?,profileImage: freezed == profileImage ? _self.profileImage : profileImage // ignore: cast_nullable_to_non_nullable
-as String?,
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? salary = null,Object? age = null,}) {
+  return _then(EmployeeEdit(
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,salary: null == salary ? _self.salary : salary // ignore: cast_nullable_to_non_nullable
+as double,age: null == age ? _self.age : age // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
 }
 
 
-/// Adds pattern-matching-related methods to [Employee].
-extension EmployeePatterns on Employee {
+/// Adds pattern-matching-related methods to [EmployeeEdit].
+extension EmployeeEditPatterns on EmployeeEdit {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:

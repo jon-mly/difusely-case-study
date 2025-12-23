@@ -1,11 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:employees_app/domain/models/employee/employee.dart';
-import 'package:employees_app/presentation/pages/employee_detail/widgets/employee_detail_cell.dart';
+import 'package:employees_app/domain/models/employee_edit/employee_edit.dart';
+import 'package:employees_app/presentation/pages/dialogs/employee_detail_edit_dialog.dart';
+import 'package:employees_app/presentation/pages/dialogs/error_dialog.dart';
 import 'package:employees_app/presentation/providers/employee_detail_provider.dart';
 import 'package:employees_app/presentation/providers/employees_provider.dart';
 import 'package:employees_app/presentation/style/fonts.dart';
 import 'package:employees_app/presentation/style/spacings.dart';
 import 'package:employees_app/presentation/widgets/button.dart';
+import 'package:employees_app/presentation/widgets/card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -19,13 +22,37 @@ class EmployeeDetailPage extends ConsumerWidget {
   // Actions
   //
 
-  void _presentEmployeeDetailEdit(BuildContext context, Employee employee) {
-    context.push('/employee/${employee.id}/edit');
+  void _presentEmployeeDetailEdit(
+    BuildContext context,
+    WidgetRef ref,
+    Employee employee,
+  ) {
+    EmployeeDetailEditDialog.show(context, employee, (
+      EmployeeEdit employeeEdit,
+    ) async {
+      try {
+        await ref
+            .read(employeesProvider.notifier)
+            .updateEmployee(employeeId, employeeEdit);
+      } catch (e) {
+        if (context.mounted) {
+          ErrorDialog.show(context, context.tr('error.updateEmployee'));
+        }
+      }
+    });
   }
 
-  void _deleteEmployee(BuildContext context, WidgetRef ref) {
-    context.pop();
-    ref.read(employeesProvider.notifier).deleteEmployee(employeeId);
+  Future<void> _deleteEmployee(BuildContext context, WidgetRef ref) async {
+    try {
+      await ref.read(employeesProvider.notifier).deleteEmployee(employeeId);
+      if (context.mounted) {
+        context.pop();
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ErrorDialog.show(context, context.tr('error.deleteEmployee'));
+      }
+    }
   }
 
   //
@@ -55,7 +82,7 @@ class EmployeeDetailPage extends ConsumerWidget {
       spacing: AppSpacing.sectionSpacing,
       crossAxisAlignment: .stretch,
       children: [
-        EmployeeDetailCell(employee: employee),
+        _buildEmployeeDataCard(context, employee),
         Row(
           spacing: AppSpacing.m,
           children: [
@@ -69,11 +96,56 @@ class EmployeeDetailPage extends ConsumerWidget {
             Expanded(
               child: AppButton(
                 text: context.tr('employeeDetail.edit'),
-                onPressed: () => _presentEmployeeDetailEdit(context, employee),
+                onPressed: () =>
+                    _presentEmployeeDetailEdit(context, ref, employee),
               ),
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _buildEmployeeDataCard(BuildContext context, Employee employee) {
+    final NumberFormat numberFormat = NumberFormat.currency(
+      symbol: '€',
+      decimalDigits: 0,
+      locale: context.locale.toString(),
+    );
+    return AppCard(
+      child: Column(
+        spacing: AppSpacing.s,
+        children: [
+          _buildDataLine(
+            context.tr('employeeDetail.cell.id'),
+            employee.id.toString(),
+          ),
+          _buildDataLine(
+            context.tr('employeeDetail.cell.name'),
+            employee.employeeName ?? '',
+          ),
+          _buildDataLine(
+            context.tr('employeeDetail.cell.salary'),
+            numberFormat.format(employee.employeeSalary),
+          ),
+          _buildDataLine(
+            context.tr('employeeDetail.cell.age'),
+            context.tr(
+              'employeeDetail.cell.ageSuffix',
+              args: [employee.employeeAge.toString()],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDataLine(String label, String value) {
+    return Row(
+      spacing: AppSpacing.s,
+      children: [
+        Expanded(child: Text(label, style: AppFonts.text)),
+        Text(value, style: AppFonts.h3),
       ],
     );
   }

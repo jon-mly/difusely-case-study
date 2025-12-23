@@ -1,6 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:employees_app/domain/models/employee/employee.dart';
+import 'package:employees_app/domain/models/employee_edit/employee_edit.dart';
 import 'package:employees_app/domain/models/sync/sync_data.dart';
+import 'package:employees_app/presentation/pages/dialogs/employee_detail_edit_dialog.dart';
+import 'package:employees_app/presentation/pages/dialogs/error_dialog.dart';
 import 'package:employees_app/presentation/pages/employees_list/widgets/employee_cell.dart';
 import 'package:employees_app/presentation/pages/employees_list/widgets/employee_loading_cell.dart';
 import 'package:employees_app/presentation/providers/employees_provider.dart';
@@ -11,8 +14,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class EmployeesListPage extends ConsumerWidget {
+class EmployeesListPage extends ConsumerStatefulWidget {
   const EmployeesListPage({super.key});
+
+  @override
+  ConsumerState<EmployeesListPage> createState() => _EmployeesListPageState();
+}
+
+class _EmployeesListPageState extends ConsumerState<EmployeesListPage> {
+  @override
+  void initState() {
+    super.initState();
+    _fetchRemoteEmployees();
+  }
+
+  Future<void> _fetchRemoteEmployees() async {
+    try {
+      await ref.read(employeesProvider.notifier).fetchEmployeesRemote();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.tr('error.fetchEmployees')),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
 
   //
   // Actions
@@ -22,8 +51,18 @@ class EmployeesListPage extends ConsumerWidget {
     context.push('/employee/${employee.id}');
   }
 
-  void _presentEmployeeCreate(BuildContext context) {
-    context.push('/employee/create');
+  void _presentEmployeeCreate(BuildContext context, WidgetRef ref) {
+    EmployeeDetailEditDialog.show(context, null, (
+      EmployeeEdit employeeEdit,
+    ) async {
+      try {
+        await ref.read(employeesProvider.notifier).createEmployee(employeeEdit);
+      } catch (e) {
+        if (context.mounted) {
+          ErrorDialog.show(context, context.tr('error.createEmployee'));
+        }
+      }
+    });
   }
 
   //
@@ -31,7 +70,7 @@ class EmployeesListPage extends ConsumerWidget {
   //
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final AsyncValue<SyncData<List<Employee>>> employeesValue = ref.watch(
       employeesProvider,
     );
@@ -47,7 +86,7 @@ class EmployeesListPage extends ConsumerWidget {
         loading: () => _buildLoading(context),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _presentEmployeeCreate(context),
+        onPressed: () => _presentEmployeeCreate(context, ref),
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: .endDocked,
@@ -78,20 +117,30 @@ class EmployeesListPage extends ConsumerWidget {
   }
 
   Widget _buildEmployeesList(BuildContext context, List<Employee> employees) {
-    if (employees.isEmpty) {
-      return Padding(
-        padding: AppSpacing.screenPaddingAll,
-        child: Center(child: Text(context.tr('employees.list.empty'))),
-      );
-    }
-    return ListView.separated(
-      itemCount: employees.length,
-      padding: AppSpacing.screenPaddingHorizontal,
-      separatorBuilder: (_, _) => AppSpacing.verticalM,
-      itemBuilder: (context, index) => EmployeeCell(
-        employee: employees[index],
-        onTap: () => _presentEmployeeDetail(context, employees[index]),
-      ),
+    return RefreshIndicator.adaptive(
+      onRefresh: _fetchRemoteEmployees,
+      child: employees.isEmpty
+          // Empty list embedded in a scrollable widget to enable pull-to-refresh
+          ? CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverFillRemaining(
+                  child: Center(
+                    child: Text(context.tr('employees.list.empty')),
+                  ),
+                ),
+              ],
+            )
+          : ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: employees.length,
+              padding: AppSpacing.screenPaddingHorizontal,
+              separatorBuilder: (_, _) => AppSpacing.verticalM,
+              itemBuilder: (context, index) => EmployeeCell(
+                employee: employees[index],
+                onTap: () => _presentEmployeeDetail(context, employees[index]),
+              ),
+            ),
     );
   }
 

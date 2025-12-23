@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:employees_app/domain/models/employee/employee.dart';
+import 'package:employees_app/domain/models/employee_edit/employee_edit.dart';
 import 'package:employees_app/domain/repositories/employees_api/employees_repository.dart';
 
 class EmployeesRepositoryMock implements EmployeesRepository {
@@ -42,21 +43,35 @@ class EmployeesRepositoryMock implements EmployeesRepository {
   }
 
   @override
-  Future<int?> createEmployee(Employee employee) async {
+  Future<int> createEmployee(EmployeeEdit employeeEdit) async {
     await Future.delayed(const Duration(seconds: 3));
-    final int id = _employees.last.id + 1;
-    _employees.add(employee.copyWith(id: id));
+    final int id = _employees.length;
+    _employees.add(
+      Employee(
+        id: id,
+        employeeName: employeeEdit.name,
+        employeeSalary: employeeEdit.salary,
+        employeeAge: employeeEdit.age,
+        profileImage: '',
+      ),
+    );
     return id;
   }
 
   @override
-  Future<void> updateEmployee(Employee employee) async {
+  Future<void> updateEmployee(int id, EmployeeEdit employeeEdit) async {
     await Future.delayed(const Duration(seconds: 3));
-    final index = _employees.indexWhere((e) => e.id == employee.id);
+    final index = _employees.indexWhere((e) => e.id == id);
     if (index == -1) {
       throw Exception('Employee not found');
     }
-    _employees[index] = employee;
+    _employees[index] = Employee(
+      id: id,
+      employeeName: employeeEdit.name,
+      employeeSalary: employeeEdit.salary,
+      employeeAge: employeeEdit.age,
+      profileImage: '',
+    );
   }
 
   @override

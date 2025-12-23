@@ -29,7 +29,7 @@ class EmployeeCell extends StatelessWidget {
                   spacing: AppSpacing.s,
                   crossAxisAlignment: .start,
                   children: [
-                    Text(employee.employeeName, style: AppFonts.h2),
+                    Text(employee.employeeName ?? '', style: AppFonts.h2),
                     Text(
                       context.tr(
                         'employees.cell.age',
