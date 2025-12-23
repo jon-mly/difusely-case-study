@@ -4,10 +4,13 @@ Diffusely case-study.
 
 ## Features implemented
 
+- Employees list view & employee detail view
+- Edition / creation popup
 - Core CRUD operations on Employees list
 - Offline support with local caching & optimistic UI (change validated locally, API call performed afterwards)
 - Employees list pull-to-refresh
 - Error management with custom error messages
+- Mocked Employees API due to test API being heavily rate-limited (see core/config/app_config.dart)
 
 ## Architecture
 
@@ -21,6 +24,6 @@ Diffusely case-study.
 
 ## Further improvements axis
 
-- No true databases reconciliation strategy implemented. Caching is rolled back if an operation fails. Could be possible to store queue operations to pass when possible
+- No true databases reconciliation strategy implemented. Caching is rolled back if an operation fails. Could be possible to store queue operations to pass when possible.
 - Connectivity-aware service to resolve remote database proactively.
-- Expand on the testing strategies
+- Implement testing strategy

@@ -17,7 +17,7 @@ class EmployeeCell extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap,
+        onTap: employee.isPending ? null : onTap,
         borderRadius: AppRadius.cardBorderRadius,
         child: AppCard(
           child: Row(
@@ -40,11 +40,12 @@ class EmployeeCell extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+              if (!employee.isPending)
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
             ],
           ),
         ),

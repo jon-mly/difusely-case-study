@@ -22,10 +22,10 @@ class Employee with _$Employee {
   @override
   @JsonKey(
     name: "employee_salary",
-    fromJson: _parseStringToDouble,
-    toJson: _parseDoubleToString,
+    fromJson: _parseStringToInt,
+    toJson: _parseIntToString,
   )
-  final double? employeeSalary;
+  final int? employeeSalary;
   @override
   @JsonKey(
     name: "employee_age",
@@ -45,9 +45,7 @@ class Employee with _$Employee {
   bool get isPending => id == null;
 }
 
-double? _parseStringToDouble(String? value) =>
-    value != null ? double.parse(value) : null;
-String? _parseDoubleToString(double? value) => value?.toString();
 int? _parseStringToInt(String? value) =>
     value != null ? int.parse(value) : null;
+
 String? _parseIntToString(int? value) => value?.toString();

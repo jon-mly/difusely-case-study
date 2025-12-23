@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EmployeeEdit {
 
- String get name; double get salary; int get age;
+ String get name; int get salary; int get age;
 /// Create a copy of EmployeeEdit
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $EmployeeEditCopyWith<$Res>  {
   factory $EmployeeEditCopyWith(EmployeeEdit value, $Res Function(EmployeeEdit) _then) = _$EmployeeEditCopyWithImpl;
 @useResult
 $Res call({
- String name, double salary, int age
+ String name, int salary, int age
 });
 
 
@@ -66,7 +66,7 @@ class _$EmployeeEditCopyWithImpl<$Res>
   return _then(EmployeeEdit(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,salary: null == salary ? _self.salary : salary // ignore: cast_nullable_to_non_nullable
-as double,age: null == age ? _self.age : age // ignore: cast_nullable_to_non_nullable
+as int,age: null == age ? _self.age : age // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

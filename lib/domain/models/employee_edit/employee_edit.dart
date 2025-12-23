@@ -15,7 +15,7 @@ class EmployeeEdit with _$EmployeeEdit {
   @override
   final String name;
   @override
-  final double salary;
+  final int salary;
   @override
   final int age;
 

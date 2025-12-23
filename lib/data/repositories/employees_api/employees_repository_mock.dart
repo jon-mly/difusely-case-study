@@ -45,7 +45,7 @@ class EmployeesRepositoryMock implements EmployeesRepository {
   @override
   Future<int> createEmployee(EmployeeEdit employeeEdit) async {
     await Future.delayed(const Duration(seconds: 3));
-    final int id = _employees.length;
+    final int id = _employees.length + 1;
     _employees.add(
       Employee(
         id: id,

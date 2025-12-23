@@ -2,11 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:employees_app/domain/models/employee/employee.dart';
 import 'package:employees_app/domain/models/employee_edit/employee_edit.dart';
 import 'package:employees_app/domain/models/sync/sync_data.dart';
-import 'package:employees_app/presentation/pages/dialogs/employee_detail_edit_dialog.dart';
-import 'package:employees_app/presentation/pages/dialogs/error_dialog.dart';
+import 'package:employees_app/presentation/pages/edit_dialog/employee_detail_edit_dialog.dart';
 import 'package:employees_app/presentation/pages/employees_list/widgets/employee_cell.dart';
 import 'package:employees_app/presentation/pages/employees_list/widgets/employee_loading_cell.dart';
 import 'package:employees_app/presentation/providers/employees_provider.dart';
+import 'package:employees_app/presentation/providers/ui/scaffold_messenger_provider.dart';
 import 'package:employees_app/presentation/style/fonts.dart';
 import 'package:employees_app/presentation/style/spacings.dart';
 import 'package:employees_app/presentation/widgets/status_chip.dart';
@@ -29,17 +29,18 @@ class _EmployeesListPageState extends ConsumerState<EmployeesListPage> {
   }
 
   Future<void> _fetchRemoteEmployees() async {
+    final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = ref.read(
+      scaffoldMessengerKeyProvider,
+    );
     try {
       await ref.read(employeesProvider.notifier).fetchEmployeesRemote();
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.tr('error.fetchEmployees')),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
+      scaffoldMessengerKey.currentState?.showSnackBar(
+        SnackBar(
+          content: Text('error.fetchEmployees'.tr()),
+          behavior: .floating,
+        ),
+      );
     }
   }
 
@@ -59,7 +60,15 @@ class _EmployeesListPageState extends ConsumerState<EmployeesListPage> {
         await ref.read(employeesProvider.notifier).createEmployee(employeeEdit);
       } catch (e) {
         if (context.mounted) {
-          ErrorDialog.show(context, context.tr('error.createEmployee'));
+          ref
+              .read(scaffoldMessengerKeyProvider)
+              .currentState
+              ?.showSnackBar(
+                SnackBar(
+                  content: Text(context.tr('error.createEmployee')),
+                  behavior: .floating,
+                ),
+              );
         }
       }
     });
@@ -103,7 +112,11 @@ class _EmployeesListPageState extends ConsumerState<EmployeesListPage> {
       crossAxisAlignment: .start,
       children: [
         Padding(
-          padding: AppSpacing.screenPaddingHorizontal,
+          padding: .only(
+            left: AppSpacing.screenPadding,
+            right: AppSpacing.screenPadding,
+            top: AppSpacing.screenPadding,
+          ),
           child: StatusChip(
             text: context.tr(dataSource.locKey),
             color: dataSource == .local
@@ -134,7 +147,7 @@ class _EmployeesListPageState extends ConsumerState<EmployeesListPage> {
           : ListView.separated(
               physics: const AlwaysScrollableScrollPhysics(),
               itemCount: employees.length,
-              padding: AppSpacing.screenPaddingHorizontal,
+              padding: AppSpacing.screenPaddingAll,
               separatorBuilder: (_, _) => AppSpacing.verticalM,
               itemBuilder: (context, index) => EmployeeCell(
                 employee: employees[index],

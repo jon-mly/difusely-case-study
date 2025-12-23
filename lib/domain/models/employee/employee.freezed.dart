@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Employee {
 
- int? get id; String? get employeeName; double? get employeeSalary; int? get employeeAge; String? get profileImage;
+ int? get id; String? get employeeName; int? get employeeSalary; int? get employeeAge; String? get profileImage;
 /// Create a copy of Employee
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -46,7 +46,7 @@ abstract mixin class $EmployeeCopyWith<$Res>  {
   factory $EmployeeCopyWith(Employee value, $Res Function(Employee) _then) = _$EmployeeCopyWithImpl;
 @useResult
 $Res call({
- int? id, String? employeeName, double? employeeSalary, int? employeeAge, String? profileImage
+ int? id, String? employeeName, int? employeeSalary, int? employeeAge, String? profileImage
 });
 
 
@@ -68,7 +68,7 @@ class _$EmployeeCopyWithImpl<$Res>
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,employeeName: freezed == employeeName ? _self.employeeName : employeeName // ignore: cast_nullable_to_non_nullable
 as String?,employeeSalary: freezed == employeeSalary ? _self.employeeSalary : employeeSalary // ignore: cast_nullable_to_non_nullable
-as double?,employeeAge: freezed == employeeAge ? _self.employeeAge : employeeAge // ignore: cast_nullable_to_non_nullable
+as int?,employeeAge: freezed == employeeAge ? _self.employeeAge : employeeAge // ignore: cast_nullable_to_non_nullable
 as int?,profileImage: freezed == profileImage ? _self.profileImage : profileImage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

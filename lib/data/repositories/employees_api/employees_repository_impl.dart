@@ -10,11 +10,12 @@ class EmployeesRepositoryImpl implements EmployeesRepository {
   Future<List<Employee>> getAllEmployees() async {
     final Response response = await Dio().get('$_baseUrl/employees');
     if (response.statusCode == 200 && response.data['status'] == 'success') {
-      print(response.data['data']);
-      return response.data['data'].map((item) {
-        print(item);
-        return Employee.fromJson(item);
-      }).toList();
+      // static check failing to recognize a List<Employee> when using .map
+      final List<Employee> employees = [];
+      for (final item in response.data['data']) {
+        employees.add(Employee.fromJson(item));
+      }
+      return employees;
     } else {
       throw Exception('Failed to load employees');
     }
@@ -24,7 +25,6 @@ class EmployeesRepositoryImpl implements EmployeesRepository {
   Future<Employee?> getEmployeeById(String id) async {
     final Response response = await Dio().get('$_baseUrl/employee/$id');
     if (response.statusCode == 200 && response.data['status'] == 'success') {
-        print(response.data);
       return Employee.fromJson(response.data.data);
     } else {
       throw Exception('Failed to load employee');
@@ -44,7 +44,6 @@ class EmployeesRepositoryImpl implements EmployeesRepository {
     }
   }
 
-  // TODO: is not exactly json from employee but specific name fields
   @override
   Future<void> updateEmployee(int id, EmployeeEdit employeeEdit) async {
     final Response response = await Dio().put(
@@ -54,13 +53,17 @@ class EmployeesRepositoryImpl implements EmployeesRepository {
     if (response.statusCode == 200 && response.data['status'] == 'success') {
       return;
     } else {
-      throw Exception('Failed to update employee');
+      throw Exception(
+        'Failed to update employee. Status code: ${response.statusCode}. Response: ${response.data.toString()}',
+      );
     }
   }
 
   @override
   Future<void> deleteEmployee(int id) async {
     final Response response = await Dio().delete('$_baseUrl/delete/$id');
+    print(response.statusCode);
+    print(response.toString());
     if (response.statusCode == 200 && response.data['status'] == 'success') {
       return;
     } else {

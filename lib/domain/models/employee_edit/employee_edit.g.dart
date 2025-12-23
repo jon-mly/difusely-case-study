@@ -8,7 +8,7 @@ part of 'employee_edit.dart';
 
 EmployeeEdit _$EmployeeEditFromJson(Map<String, dynamic> json) => EmployeeEdit(
   name: json['name'] as String,
-  salary: (json['salary'] as num).toDouble(),
+  salary: (json['salary'] as num).toInt(),
   age: (json['age'] as num).toInt(),
 );
 

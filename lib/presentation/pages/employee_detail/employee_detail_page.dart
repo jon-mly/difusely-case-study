@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:employees_app/domain/models/employee/employee.dart';
 import 'package:employees_app/domain/models/employee_edit/employee_edit.dart';
-import 'package:employees_app/presentation/pages/dialogs/employee_detail_edit_dialog.dart';
-import 'package:employees_app/presentation/pages/dialogs/error_dialog.dart';
+import 'package:employees_app/presentation/pages/edit_dialog/employee_detail_edit_dialog.dart';
 import 'package:employees_app/presentation/providers/employee_detail_provider.dart';
 import 'package:employees_app/presentation/providers/employees_provider.dart';
+import 'package:employees_app/presentation/providers/ui/scaffold_messenger_provider.dart';
 import 'package:employees_app/presentation/style/fonts.dart';
 import 'package:employees_app/presentation/style/spacings.dart';
 import 'package:employees_app/presentation/widgets/button.dart';
@@ -30,28 +30,38 @@ class EmployeeDetailPage extends ConsumerWidget {
     EmployeeDetailEditDialog.show(context, employee, (
       EmployeeEdit employeeEdit,
     ) async {
+      final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = ref.read(
+        scaffoldMessengerKeyProvider,
+      );
       try {
         await ref
             .read(employeesProvider.notifier)
             .updateEmployee(employeeId, employeeEdit);
       } catch (e) {
-        if (context.mounted) {
-          ErrorDialog.show(context, context.tr('error.updateEmployee'));
-        }
+        scaffoldMessengerKey.currentState?.showSnackBar(
+          SnackBar(
+            content: Text('error.updateEmployee'.tr()),
+            behavior: .floating,
+          ),
+        );
       }
     });
   }
 
   Future<void> _deleteEmployee(BuildContext context, WidgetRef ref) async {
+    final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = ref.read(
+      scaffoldMessengerKeyProvider,
+    );
+    context.pop();
     try {
       await ref.read(employeesProvider.notifier).deleteEmployee(employeeId);
-      if (context.mounted) {
-        context.pop();
-      }
     } catch (e) {
-      if (context.mounted) {
-        ErrorDialog.show(context, context.tr('error.deleteEmployee'));
-      }
+      scaffoldMessengerKey.currentState?.showSnackBar(
+        SnackBar(
+          content: Text('error.deleteEmployee'.tr()),
+          behavior: .floating,
+        ),
+      );
     }
   }
 

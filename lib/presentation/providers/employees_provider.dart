@@ -16,7 +16,6 @@ class EmployeesNotifier extends AsyncNotifier<SyncData<List<Employee>>> {
     final List<Employee> localEmployees = await ref
         .read(employeesPersistenceServiceProvider)
         .getAllEmployees();
-    fetchEmployeesRemote();
     return SyncData(data: localEmployees, source: .local);
   }
 
@@ -31,6 +30,7 @@ class EmployeesNotifier extends AsyncNotifier<SyncData<List<Employee>>> {
           .saveEmployees(remoteEmployees);
       _updateState(SyncData(data: remoteEmployees, source: .remote));
     } catch (e) {
+      print(e);
       _updateState(SyncData(data: originalList, source: .local));
       rethrow;
     }

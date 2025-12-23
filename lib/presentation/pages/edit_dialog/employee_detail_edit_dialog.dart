@@ -75,7 +75,7 @@ class _EmployeeDetailEditDialogState extends State<EmployeeDetailEditDialog> {
     widget.onEmployeeUpdated(
       EmployeeEdit(
         name: _nameController.text.trim(),
-        salary: double.parse(_salaryController.text),
+        salary: int.parse(_salaryController.text),
         age: int.parse(_ageController.text),
       ),
     );
@@ -111,7 +111,6 @@ class _EmployeeDetailEditDialogState extends State<EmployeeDetailEditDialog> {
       key: _formKey,
       child: Column(
         mainAxisSize: .min,
-        spacing: AppSpacing.m,
         children: [
           Text(
             widget.initialEmployee == null
@@ -123,7 +122,7 @@ class _EmployeeDetailEditDialogState extends State<EmployeeDetailEditDialog> {
           TextFormField(
             controller: _nameController,
             decoration: .new(
-              labelText: context.tr('employeeDetail.edit.nameLabel'),
+              labelText: context.tr('employeeDetail.editDialog.nameLabel'),
             ),
             validator: (v) => v == null || v.trim().isEmpty
                 ? context.tr('employeeDetail.edit.nameValidator')
@@ -133,32 +132,32 @@ class _EmployeeDetailEditDialogState extends State<EmployeeDetailEditDialog> {
           TextFormField(
             controller: _salaryController,
             decoration: .new(
-              labelText: context.tr('employeeDetail.edit.salaryLabel'),
+              labelText: context.tr('employeeDetail.editDialog.salaryLabel'),
               suffixText: '€',
             ),
             keyboardType: .number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             validator: (v) =>
                 (v == null || v.isEmpty || double.tryParse(v) == null)
-                ? context.tr('employeeDetail.edit.salaryValidator')
+                ? context.tr('employeeDetail.editDialog.salaryValidator')
                 : null,
           ),
           AppSpacing.verticalS,
           TextFormField(
             controller: _ageController,
             decoration: .new(
-              labelText: context.tr('employeeDetail.edit.ageLabel'),
+              labelText: context.tr('employeeDetail.editDialog.ageLabel'),
             ),
             keyboardType: .number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             validator: (v) =>
                 (v == null || v.isEmpty || int.tryParse(v) == null)
-                ? context.tr('employeeDetail.edit.ageValidator')
+                ? context.tr('employeeDetail.editDialog.ageValidator')
                 : null,
           ),
           AppSpacing.verticalM,
           AppButton(
-            text: context.tr('employeeDetail.edit.save'),
+            text: context.tr('employeeDetail.editDialog.save'),
             onPressed: _save,
           ),
         ],
